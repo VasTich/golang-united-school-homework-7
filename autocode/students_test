@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 	"time"
+	"strconv"
 )
 
 // DO NOT EDIT THIS FUNCTION
@@ -84,5 +85,165 @@ func TestLessEqualBirthdayEqualFirstName(t *testing.T) {
 	
 	if !persons.Less(0, 1) {
 		t.Errorf("Test Less Equal Birthday Equal First Name: not correct less operation")
+	}
+}
+
+///////////////////////////////////////////////////////////////////
+
+func generateMatrix() (*Matrix, error) {
+	var rowCount int = 2
+	var colCount int = 4
+	var data []int;
+	var counter int = 0
+	var input string
+	for i := 0; i < rowCount; i++ {
+		for j := 0; j < colCount; j++ {
+			data = append(data, counter)
+			
+			num := strconv.Itoa(counter)			
+			input = input + num + " "
+			counter = counter + 1
+		}
+		
+		if i != rowCount -1 {
+			input = input + "\n"
+		}
+	}
+	
+	mat, err := New(input)
+	return mat, err
+}
+
+func TestNewMatrix(t *testing.T) {	
+	mat, err := generateMatrix()
+	if err != nil {
+		t.Errorf("Tes New Matrix: not correct string transformation %s", err.Error())
+	}
+	
+	if mat == nil {
+		t.Errorf("Tes New Matrix: not correct string transformation matrix is nil")
+	}
+}
+
+func TestNewMatrixDiffColumns(t *testing.T) {
+	var rowCount int = 2
+	var colCount int = 4
+	var data []int;
+	var counter int = 0
+	var input string
+	for i := 0; i < rowCount; i++ {
+		for j := 0; j < colCount; j++ {
+			data = append(data, counter)
+			
+			num := strconv.Itoa(counter)			
+			input = input + num + " "
+			counter = counter + 1
+		}
+		
+		input = input + "\n"
+	}
+	
+	mat, err := New(input)
+	
+	if err == nil || mat != nil {
+		t.Errorf("Tes New Matrix Diff Columns: string not correct but not error")
+	}
+}
+
+func TestNewMatrixNotInt(t *testing.T) {
+	var input string = "5 100 hello"
+	
+	mat, err := New(input)
+	
+	if err == nil || mat != nil {
+		t.Errorf("Tes New Matrix Diff Columns: string not correct but not error")
+	}
+}
+
+func TestSet(t *testing.T) {
+    mat, err := generateMatrix()
+	if err != nil {
+		t.Errorf("Test Set: not correct string transformation %s", err.Error())
+	}
+	
+	if mat == nil {
+		t.Errorf("Test Set: not correct string transformation matrix is nil")
+	}
+	
+	var expected int = 20
+	if !mat.Set(0, 0, expected) && mat.data[0] != expected {
+		t.Errorf("Test Set: expected value %d get %d", expected, mat.data[0])
+	}
+}
+
+func TestSetUncorrectRow(t *testing.T) {
+    mat, err := generateMatrix()
+	if err != nil {
+		t.Errorf("Test Set Uncorrect row: not correct string transformation %s", err.Error())
+	}
+	
+	if mat == nil {
+		t.Errorf("Test Set Uncorrect row: not correct string transformation matrix is nil")
+	}
+	
+	var expected int = 20
+	if mat.Set(100, 0, expected) {
+		t.Errorf("Test set uncorrect row: set uncorrect row")
+	}
+	
+	if mat.Set(-100, 0, expected) {
+		t.Errorf("Test set uncorrect row: set uncorrect row")
+	}
+}
+
+func TestSetUncorrectCol(t *testing.T) {
+    mat, err := generateMatrix()
+	if err != nil {
+		t.Errorf("Test Set Uncorrect col: not correct string transformation %s", err.Error())
+	}
+	
+	if mat == nil {
+		t.Errorf("Test Set Uncorrect col: not correct string transformation matrix is nil")
+	}
+	
+	var expected int = 20
+	if mat.Set(0, 100, expected) {
+		t.Errorf("Test set uncorrect col: set uncorrect col")
+	}
+	
+	if mat.Set(0, -100, expected) {
+		t.Errorf("Test set uncorrect col: set uncorrect col")
+	}
+}
+
+func TestRows(t *testing.T) {
+	mat, err := generateMatrix()
+	if err != nil {
+		t.Errorf("Test Rows: not correct string transformation %s", err.Error())
+	}
+	
+	if mat == nil {
+		t.Errorf("Test Rows: not correct string transformation matrix is nil")
+	}
+	
+	rows := mat.Rows()
+	if len(rows) != 2 {
+		t.Errorf("Test Rows: expected row %d get %d", 2, len(rows))
+	}
+}
+
+func TestCols(t *testing.T) {
+	mat, err := generateMatrix()
+	if err != nil {
+		t.Errorf("Test Cols: not correct string transformation %s", err.Error())
+	}
+	
+	if mat == nil {
+		t.Errorf("Test Cols: not correct string transformation matrix is nil")
+	}
+	
+	cols := mat.Cols()
+	if len(cols) != 4 {
+		t.Errorf("Test Cols: expected cols %d get %d", 4, len(cols))
 	}
 }
